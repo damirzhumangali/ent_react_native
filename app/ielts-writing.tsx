@@ -217,8 +217,14 @@ const getPromptImage = (promptText: string) => {
   if (promptText.includes("girls per 100 boys") || promptText.includes("enrolled in different levels of school")) {
     return require("@/assets/images/gender_school_enrollment.png");
   }
+  if (promptText.includes("archaeological") || promptText.includes("archaeological site")) {
+    return require("@/assets/images/archaeological_site.jpg");
+  }
   if (promptText.includes("ethanol fuel is produced from corn") || promptText.includes("produced from corn")) {
     return require("@/assets/images/corn_ethanol_production.jpg");
+  }
+  if (promptText.includes("General Letter") || promptText.includes("English school principal")) {
+    return null;
   }
   return require("@/assets/images/uae_spending.png");
 };
