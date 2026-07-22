@@ -76,10 +76,10 @@ const getPromptImage = (promptText: string) => {
     return require("@/assets/images/produce_recycle_paper.png");
   }
   if (promptText.includes("USA to Canada") || promptText.includes("visitors from the USA")) {
-    return require("@/assets/images/usa_canada_visitors.png");
+    return require("@/assets/images/usa_canada_visitors.jpg");
   }
   if (promptText.includes("Turkey") || promptText.includes("spending in Turkey")) {
-    return require("@/assets/images/turkey_spending.png");
+    return require("@/assets/images/turkey_spending.jpg");
   }
   if (promptText.includes("employment patterns") || promptText.includes("USA between 1930")) {
     return require("@/assets/images/us_employment.png");
@@ -97,19 +97,19 @@ const getPromptImage = (promptText: string) => {
     return require("@/assets/images/australia_telephone_calls.png");
   }
   if (promptText.includes("housing owned and rented") || promptText.includes("rented in the UK in 1991 and 2007")) {
-    return require("@/assets/images/uk_housing_owned_rented.png");
+    return require("@/assets/images/uk_housing_owned_rented.jpg");
   }
   if (promptText.includes("automatic photo booth") || promptText.includes("photo booth")) {
-    return require("@/assets/images/automatic_photo_booth.png");
+    return require("@/assets/images/automatic_photo_booth.jpg");
   }
   if (promptText.includes("changes of a park from 1980") || promptText.includes("changes of a park")) {
     return require("@/assets/images/park_changes_1980.png");
   }
   if (promptText.includes("oil production and consumption in China") || promptText.includes("between 1982 and 2006")) {
-    return require("@/assets/images/china_oil_production_consumption.png");
+    return require("@/assets/images/china_oil_production_consumption.jpg");
   }
   if (promptText.includes("recycle organic waste") || promptText.includes("produce garden fertilizer")) {
-    return require("@/assets/images/organic_waste_compost.png");
+    return require("@/assets/images/organic_waste_compost.jpg");
   }
   if (promptText.includes("bookstore in 2000 and now") || promptText.includes("bookstore")) {
     return require("@/assets/images/bookstore_layout.png");
@@ -118,13 +118,13 @@ const getPromptImage = (promptText: string) => {
     return require("@/assets/images/australian_demographics.png");
   }
   if (promptText.includes("world population in 4 countries") || promptText.includes("projections for 2050")) {
-    return require("@/assets/images/world_population_projections.png");
+    return require("@/assets/images/world_population_projections.jpg");
   }
   if (promptText.includes("girls per 100 boys") || promptText.includes("enrolled in different levels of school")) {
     return require("@/assets/images/gender_school_enrollment.png");
   }
   if (promptText.includes("ethanol fuel is produced from corn") || promptText.includes("produced from corn")) {
-    return require("@/assets/images/corn_ethanol_production.png");
+    return require("@/assets/images/corn_ethanol_production.jpg");
   }
   return require("@/assets/images/uae_spending.png");
 };
