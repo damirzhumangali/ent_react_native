@@ -5,7 +5,7 @@ export const subjectTopicsData: { [key in Subject]?: { kk: string[]; ru: string[
   "ieltsWriting": {
     "kk": [
       "UAE Government Spending",
-      "General Letter",
+      "Produce and Recycle Paper",
       "Changes in Dalton",
       "Archaeological Site",
       "USA to Canada Visitors",
@@ -28,7 +28,7 @@ export const subjectTopicsData: { [key in Subject]?: { kk: string[]; ru: string[
     ],
     "ru": [
       "UAE Government Spending",
-      "General Letter",
+      "Produce and Recycle Paper",
       "Changes in Dalton",
       "Archaeological Site",
       "USA to Canada Visitors",
@@ -51,7 +51,7 @@ export const subjectTopicsData: { [key in Subject]?: { kk: string[]; ru: string[
     ],
     "en": [
       "UAE Government Spending",
-      "General Letter",
+      "Produce and Recycle Paper",
       "Changes in Dalton",
       "Archaeological Site",
       "USA to Canada Visitors",

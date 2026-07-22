@@ -55,9 +55,9 @@ const defaultPrompts: { [key: string]: { task1: string; task2: string } } = {
     task1: "The pie chart gives information on UAE government spending in 2000. The total budget was AED 315 billion.\n\nSummarize the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
     task2: "In some countries, bicycles are increasingly replacing cars, while in others, people prefer driving over cycling. What are the reasons behind this trend? Do you think this is a positive or negative development? Write at least 250 words.",
   },
-  "General Letter": {
-    task1: "You should spend about 20 minutes on this task.\n\nWrite a letter to a local English school principal explaining why you want to enroll in their advanced writing course, describe your writing background, and ask about enrollment options. Write at least 150 words.",
-    task2: "In many countries, the cost of using public transport is rising rapidly.\n\nWhat are the causes of this problem? What solutions can be implemented to address it? Write at least 250 words.",
+  "Produce and Recycle Paper": {
+    task1: "The diagram below shows how to produce and recycle paper..\n\nSummarise the information by selecting and reporting the main features, and make comparison where relevant.",
+    task2: "In many modern cities, there is a growing trend of individuals living alone or in nuclear family units rather than residing with extended family members. Is this a positive or negative development?",
   },
   "Changes in Dalton": {
     task1: "The two maps illustrate the changes in the town of Dalton between the years 1815 and 2015.\n\nSummarise the information by selecting and reporting the main features, and make comparison where relevant. Write at least 150 words.",
@@ -138,7 +138,8 @@ const defaultPrompts: { [key: string]: { task1: string; task2: string } } = {
 };
 
 defaultPrompts["IELTS Academic"] = defaultPrompts["UAE Government Spending"];
-defaultPrompts["IELTS General"] = defaultPrompts["General Letter"];
+defaultPrompts["IELTS General"] = defaultPrompts["Produce and Recycle Paper"];
+defaultPrompts["General Letter"] = defaultPrompts["Produce and Recycle Paper"];
 defaultPrompts["IELTS Mock Exam"] = defaultPrompts["Changes in Dalton"];
 defaultPrompts["IELTS Practice Test"] = defaultPrompts["Archaeological Site"];
 defaultPrompts["IELTS Actual Test"] = defaultPrompts["USA to Canada Visitors"];
