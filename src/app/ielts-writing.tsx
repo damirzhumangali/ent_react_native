@@ -282,6 +282,7 @@ export default function IeltsWritingScreen() {
   const [task1Score, setTask1Score] = useState<number | null>(null);
   const [task2Score, setTask2Score] = useState<number | null>(null);
   const [essayViewMode, setEssayViewMode] = useState<"original" | "corrected" | "comparison">("comparison");
+  const [showOverallModal, setShowOverallModal] = useState<boolean>(false);
 
   const renderHighlightedEssay = (
     essayText: string,
@@ -939,8 +940,60 @@ export default function IeltsWritingScreen() {
 
 
 
-            {/* Retry Button */}
-            <Pressable onPress={() => setFeedback(null)} style={styles.retryButton}>
+            {/* Primary Action Button (Transition / Overall Score Calculation) */}
+            {activeTask === "task1" ? (
+              <Pressable
+                onPress={() => {
+                  setTask1Score(feedback.overallScore);
+                  setActiveTask("task2");
+                  setFeedback(null);
+                  setEssayText("");
+                }}
+                style={styles.primaryActionButton}
+              >
+                <Text style={styles.primaryActionButtonText}>
+                  {isKazakh ? "Task 2 тапсырмасына өту" : "Перейти к Task 2"}
+                </Text>
+                <Ionicons name="arrow-forward" size={18} color="#FFFFFF" style={{ marginLeft: 8 }} />
+              </Pressable>
+            ) : task1Score === null ? (
+              <Pressable
+                onPress={() => {
+                  setTask2Score(feedback.overallScore);
+                  setActiveTask("task1");
+                  setFeedback(null);
+                  setEssayText("");
+                }}
+                style={styles.primaryActionButton}
+              >
+                <Ionicons name="arrow-back" size={18} color="#FFFFFF" style={{ marginRight: 8 }} />
+                <Text style={styles.primaryActionButtonText}>
+                  {isKazakh ? "Task 1 тапсырмасын орындау" : "Выполнить Task 1"}
+                </Text>
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={() => {
+                  setTask2Score(feedback.overallScore);
+                  setShowOverallModal(true);
+                }}
+                style={styles.primaryActionButton}
+              >
+                <Ionicons name="calculator" size={18} color="#FFFFFF" style={{ marginRight: 8 }} />
+                <Text style={styles.primaryActionButtonText}>
+                  {isKazakh ? "Жалпы баллды есептеу (Overall Score)" : "Рассчитать общий балл (Overall Score)"}
+                </Text>
+              </Pressable>
+            )}
+
+            {/* Secondary Retry Button */}
+            <Pressable
+              onPress={() => {
+                setFeedback(null);
+                setEssayText("");
+              }}
+              style={styles.retryButton}
+            >
               <Ionicons name="refresh" size={18} color="#045DA9" style={{ marginRight: 6 }} />
               <Text style={styles.retryButtonText}>
                 {isKazakh ? "Жаңа эссе тексеру" : "Проверить другое эссе"}
@@ -949,6 +1002,60 @@ export default function IeltsWritingScreen() {
           </View>
         )}
       </ScrollView>
+
+      {/* Modal / Overlay for Overall Writing Score */}
+      {showOverallModal && task1Score !== null && (
+        <View style={styles.overallModalOverlay}>
+          <View style={styles.overallModalCard}>
+            <LinearGradient colors={["#045DA9", "#022B54"]} style={styles.overallModalBanner}>
+              <Ionicons name="trophy" size={38} color="#FBBF24" style={{ marginBottom: 8 }} />
+              <Text style={styles.overallModalHeaderTitle}>
+                {isKazakh ? "IELTS WRITING ОФИЦИАЛДЫ БАЛЛЫ" : "ОФИЦИАЛЬНЫЙ БАЛЛ IELTS WRITING"}
+              </Text>
+              <Text style={styles.overallModalScoreBig}>
+                Band {getCombinedScore(task1Score, task2Score ?? feedback?.overallScore ?? 6.5).toFixed(1)}
+              </Text>
+              <Text style={styles.overallModalSubtext}>
+                {getCombinedScore(task1Score, task2Score ?? feedback?.overallScore ?? 6.5) >= 7.0
+                  ? (isKazakh ? "Жоғары академиялық деңгей (Good User)" : "Отличный академический результат (Good User)")
+                  : (isKazakh ? "Орташа деңгей (Competent User)" : "Хороший результат (Competent User)")}
+              </Text>
+            </LinearGradient>
+
+            <View style={styles.overallModalDetailsRow}>
+              <View style={styles.overallModalDetailBox}>
+                <Text style={styles.overallModalDetailLabel}>Task 1 (1/3)</Text>
+                <Text style={styles.overallModalDetailValue}>Band {task1Score.toFixed(1)}</Text>
+              </View>
+
+              <View style={styles.overallModalDetailDivider} />
+
+              <View style={styles.overallModalDetailBox}>
+                <Text style={styles.overallModalDetailLabel}>Task 2 (2/3)</Text>
+                <Text style={styles.overallModalDetailValue}>
+                  Band {(task2Score ?? feedback?.overallScore ?? 6.5).toFixed(1)}
+                </Text>
+              </View>
+            </View>
+
+            <Pressable
+              onPress={() => {
+                setShowOverallModal(false);
+                setTask1Score(null);
+                setTask2Score(null);
+                setFeedback(null);
+                setEssayText("");
+                setActiveTask("task1");
+              }}
+              style={styles.overallModalCloseButton}
+            >
+              <Text style={styles.overallModalCloseButtonText}>
+                {isKazakh ? "Жаңа тест бастау" : "Начать новый тест"}
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -1446,6 +1553,107 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#475569",
     lineHeight: 18,
+  },
+  primaryActionButton: {
+    backgroundColor: "#045DA9",
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#045DA9",
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  primaryActionButtonText: {
+    color: "#FFFFFF",
+    fontSize: 15,
+    fontWeight: "800",
+  },
+  overallModalOverlay: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(15, 23, 42, 0.75)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    zIndex: 999,
+  },
+  overallModalCard: {
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 24,
+    overflow: "hidden",
+    shadowColor: "#000000",
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+  },
+  overallModalBanner: {
+    padding: 24,
+    alignItems: "center",
+  },
+  overallModalHeaderTitle: {
+    color: "#93C5FD",
+    fontSize: 11,
+    fontWeight: "900",
+    letterSpacing: 1,
+    marginBottom: 6,
+  },
+  overallModalScoreBig: {
+    color: "#FFFFFF",
+    fontSize: 42,
+    fontWeight: "900",
+    marginBottom: 4,
+  },
+  overallModalSubtext: {
+    color: "#E0F2FE",
+    fontSize: 13,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  overallModalDetailsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#F8FAFC",
+  },
+  overallModalDetailBox: {
+    flex: 1,
+    alignItems: "center",
+  },
+  overallModalDetailLabel: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#64748B",
+    marginBottom: 4,
+  },
+  overallModalDetailValue: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#0F172A",
+  },
+  overallModalDetailDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: "#CBD5E1",
+  },
+  overallModalCloseButton: {
+    backgroundColor: "#045DA9",
+    margin: 20,
+    paddingVertical: 14,
+    borderRadius: 14,
+    alignItems: "center",
+  },
+  overallModalCloseButtonText: {
+    color: "#FFFFFF",
+    fontSize: 15,
+    fontWeight: "800",
   },
   overallBanner: {
     borderRadius: 16,
