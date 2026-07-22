@@ -15,7 +15,16 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useGameStore } from "@/store/useGameStore";
 import { Ionicons } from "@expo/vector-icons";
 
+import Svg, { Circle } from "react-native-svg";
+
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
+interface EssayError {
+  originalText: string;
+  correction: string;
+  explanation: string;
+  category?: string;
+}
 
 interface EssayFeedback {
   overallScore: number;
@@ -26,6 +35,8 @@ interface EssayFeedback {
   wordCount: number;
   comments: string[];
   improvedVersion: string;
+  overallVerdict?: string;
+  errors?: EssayError[];
 }
 
 const ieltsApiKeys = [
@@ -269,6 +280,107 @@ export default function IeltsWritingScreen() {
   const [feedback, setFeedback] = useState<EssayFeedback | null>(null);
   const [task1Score, setTask1Score] = useState<number | null>(null);
   const [task2Score, setTask2Score] = useState<number | null>(null);
+  const [essayViewMode, setEssayViewMode] = useState<"original" | "corrected" | "comparison">("comparison");
+
+  const renderHighlightedEssay = (
+    essayText: string,
+    errors: EssayError[],
+    mode: "original" | "corrected" | "comparison"
+  ) => {
+    if (!errors || errors.length === 0) {
+      return <Text style={styles.essayNormalText}>{essayText}</Text>;
+    }
+
+    interface Occurrence {
+      error: EssayError;
+      start: number;
+      end: number;
+    }
+
+    const occurrences: Occurrence[] = [];
+    const lowerEssay = essayText.toLowerCase();
+
+    for (const err of errors) {
+      if (!err.originalText) continue;
+      const lowerOrig = err.originalText.toLowerCase().trim();
+      if (!lowerOrig) continue;
+
+      let idx = lowerEssay.indexOf(lowerOrig);
+      while (idx !== -1) {
+        const endIdx = idx + lowerOrig.length;
+        const overlaps = occurrences.some(
+          (o) => (idx >= o.start && idx < o.end) || (endIdx > o.start && endIdx <= o.end)
+        );
+        if (!overlaps) {
+          occurrences.push({ error: err, start: idx, end: endIdx });
+        }
+        idx = lowerEssay.indexOf(lowerOrig, endIdx);
+      }
+    }
+
+    occurrences.sort((a, b) => a.start - b.start);
+
+    if (occurrences.length === 0) {
+      return <Text style={styles.essayNormalText}>{essayText}</Text>;
+    }
+
+    const elements: React.ReactNode[] = [];
+    let currIndex = 0;
+
+    occurrences.forEach((occ, i) => {
+      if (occ.start > currIndex) {
+        elements.push(
+          <Text key={`norm-${i}`} style={styles.essayNormalText}>
+            {essayText.slice(currIndex, occ.start)}
+          </Text>
+        );
+      }
+
+      const originalSub = essayText.slice(occ.start, occ.end);
+
+      if (mode === "original") {
+        elements.push(
+          <Text key={`orig-${i}`} style={styles.essayErrorOriginal}>
+            {originalSub}
+          </Text>
+        );
+      } else if (mode === "corrected") {
+        elements.push(
+          <Text key={`corr-${i}`} style={styles.essayErrorCorrected}>
+            {occ.error.correction}
+          </Text>
+        );
+      } else {
+        elements.push(
+          <Text key={`comp-orig-${i}`} style={styles.essayErrorOriginalStrikethrough}>
+            {originalSub}
+          </Text>
+        );
+        elements.push(
+          <Text key={`comp-space-${i}`} style={styles.essayNormalText}>
+            {" "}
+          </Text>
+        );
+        elements.push(
+          <Text key={`comp-corr-${i}`} style={styles.essayErrorCorrected}>
+            {occ.error.correction}
+          </Text>
+        );
+      }
+
+      currIndex = occ.end;
+    });
+
+    if (currIndex < essayText.length) {
+      elements.push(
+        <Text key="norm-end" style={styles.essayNormalText}>
+          {essayText.slice(currIndex)}
+        </Text>
+      );
+    }
+
+    return <Text style={styles.essayBodyContainer}>{elements}</Text>;
+  };
 
   const getCombinedScore = (t1: number, t2: number): number => {
     const raw = (t1 * (1 / 3)) + (t2 * (2 / 3));
@@ -350,6 +462,8 @@ export default function IeltsWritingScreen() {
           wordCount: currentWordCount,
           comments: comments.length > 0 ? comments : [isKazakh ? "Эссе тексерілді." : "Эссе успешно проверено."],
           improvedVersion: correctionsText,
+          overallVerdict: data.overallFeedback || "",
+          errors: errorsList,
         });
         setIsAnalyzing(false);
         return;
@@ -617,22 +731,59 @@ export default function IeltsWritingScreen() {
         ) : (
           /* AI Feedback Result Section */
           <View style={styles.feedbackSection}>
-            {/* Overall Score Banner */}
-            <LinearGradient colors={["#045DA9", "#063A6E"]} style={styles.overallBanner}>
-              <Text style={styles.overallBannerTitle}>
-                {isKazakh ? "ЖАЛПЫ БАЛЛ (OVERALL SCORE)" : "ОБЩИЙ БАЛЛ (OVERALL SCORE)"}
-              </Text>
-              <Text style={styles.overallScoreBig}>Band {feedback.overallScore}</Text>
-              <Text style={styles.overallSubtext}>
-                {feedback.overallScore >= 7.5
-                  ? isKazakh
-                    ? "Жоғары академиялық деңгей (Good User / Very Good User)"
-                    : "Отличный результат (Good User / Very Good User)"
-                  : isKazakh
-                  ? "Орташа деңгей (Competent User)"
-                  : "Хороший результат (Competent User)"}
-              </Text>
-            </LinearGradient>
+            {/* Band Score Circle Card */}
+            <View style={styles.bandScoreCircleCard}>
+              <View style={styles.circleContainer}>
+                <Svg width={90} height={90} viewBox="0 0 90 90">
+                  <Circle cx="45" cy="45" r="38" stroke="#E2E8F0" strokeWidth="8" fill="none" />
+                  <Circle
+                    cx="45"
+                    cy="45"
+                    r="38"
+                    stroke="#045DA9"
+                    strokeWidth="8"
+                    fill="none"
+                    strokeDasharray={`${2 * Math.PI * 38}`}
+                    strokeDashoffset={`${2 * Math.PI * 38 * (1 - feedback.overallScore / 9.0)}`}
+                    strokeLinecap="round"
+                    transform="rotate(-90 45 45)"
+                  />
+                </Svg>
+                <View style={styles.circleTextOverlay}>
+                  <Text style={styles.circleScoreText}>{feedback.overallScore.toFixed(1)}</Text>
+                </View>
+              </View>
+              <View style={styles.bandScoreMeta}>
+                <Text style={styles.bandScoreMetaLabel}>IELTS Band Score</Text>
+                <Text style={styles.bandScoreMetaTitle}>
+                  {feedback.overallScore >= 8.0
+                    ? "Very Good User"
+                    : feedback.overallScore >= 7.0
+                    ? "Good User"
+                    : feedback.overallScore >= 6.0
+                    ? "Competent User"
+                    : "Modest User"}
+                </Text>
+                <Text style={styles.bandScoreMetaSub}>
+                  {feedback.overallScore >= 7.0
+                    ? (isKazakh ? "Жоғары нәтиже!" : "Отличный результат!")
+                    : (isKazakh ? "Орташа нәтиже." : "Хорошая попытка!")}
+                </Text>
+              </View>
+            </View>
+
+            {/* Overall Verdict Accent Card */}
+            {Boolean(feedback.overallVerdict) && (
+              <View style={styles.overallVerdictCard}>
+                <View style={styles.overallVerdictAccentBar} />
+                <View style={styles.overallVerdictContent}>
+                  <Text style={styles.overallVerdictTitle}>
+                    {isKazakh ? "ЖАЛПЫ ҚОРЫТЫНДЫ" : "ОБЩИЙ ВЕРДИКТ"}
+                  </Text>
+                  <Text style={styles.overallVerdictText}>{feedback.overallVerdict}</Text>
+                </View>
+              </View>
+            )}
 
             {/* 4 Criteria Breakdown Grid */}
             <Text style={styles.criteriaSectionTitle}>
@@ -669,7 +820,49 @@ export default function IeltsWritingScreen() {
               </View>
             </View>
 
-            {/* Comments List */}
+            {/* ВАШЕ ЭССЕ С ИСПРАВЛЕНИЯМИ Card */}
+            <View style={styles.correctionsCard}>
+              <Text style={styles.correctionsTitle}>
+                {isKazakh ? "ВАШЕ ЭССЕ С ИСПРАВЛЕНИЯМИ" : "ВАШЕ ЭССЕ С ИСПРАВЛЕНИЯМИ"}
+              </Text>
+
+              {/* Segmented Control Picker */}
+              <View style={styles.segmentedControlTrack}>
+                <Pressable
+                  onPress={() => setEssayViewMode("original")}
+                  style={[styles.segmentedSegment, essayViewMode === "original" && styles.segmentedSegmentActive]}
+                >
+                  <Text style={[styles.segmentedText, essayViewMode === "original" && styles.segmentedTextActive]}>
+                    {isKazakh ? "Оригинал" : "Оригинал"}
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  onPress={() => setEssayViewMode("corrected")}
+                  style={[styles.segmentedSegment, essayViewMode === "corrected" && styles.segmentedSegmentActive]}
+                >
+                  <Text style={[styles.segmentedText, essayViewMode === "corrected" && styles.segmentedTextActive]}>
+                    {isKazakh ? "Исправленный" : "Исправленный"}
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  onPress={() => setEssayViewMode("comparison")}
+                  style={[styles.segmentedSegment, essayViewMode === "comparison" && styles.segmentedSegmentActive]}
+                >
+                  <Text style={[styles.segmentedText, essayViewMode === "comparison" && styles.segmentedTextActive]}>
+                    {isKazakh ? "Сравнение" : "Сравнение"}
+                  </Text>
+                </Pressable>
+              </View>
+
+              {/* Highlighted Essay Box */}
+              <View style={styles.essayBoxContainer}>
+                {renderHighlightedEssay(essayText, feedback.errors || [], essayViewMode)}
+              </View>
+            </View>
+
+            {/* Concise Comments List */}
             <View style={styles.commentsCard}>
               <Text style={styles.commentsCardTitle}>
                 {isKazakh ? "Сарапшы пікірі & Кеңестер" : "Замечания и рекомендации"}
@@ -680,14 +873,6 @@ export default function IeltsWritingScreen() {
                   <Text style={styles.commentText}>{comment}</Text>
                 </View>
               ))}
-            </View>
-
-            {/* Improved Essay Preview */}
-            <View style={styles.improvedCard}>
-              <Text style={styles.improvedTitle}>
-                {isKazakh ? "AI Жақсартқан Нұсқасы" : "Улучшенная версия (AI)"}
-              </Text>
-              <Text style={styles.improvedText}>{feedback.improvedVersion}</Text>
             </View>
 
             {/* Retry Button */}
@@ -909,6 +1094,168 @@ const styles = StyleSheet.create({
   },
   feedbackSection: {
     gap: 16,
+  },
+  bandScoreCircleCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    padding: 16,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    shadowColor: "#000000",
+    shadowOpacity: 0.04,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  circleContainer: {
+    width: 90,
+    height: 90,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  circleTextOverlay: {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  circleScoreText: {
+    fontSize: 26,
+    fontWeight: "900",
+    color: "#1E293B",
+  },
+  bandScoreMeta: {
+    marginLeft: 16,
+    flex: 1,
+  },
+  bandScoreMetaLabel: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#64748B",
+    letterSpacing: 0.5,
+  },
+  bandScoreMetaTitle: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#0F172A",
+    marginVertical: 2,
+  },
+  bandScoreMetaSub: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: "#64748B",
+  },
+  overallVerdictCard: {
+    flexDirection: "row",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    shadowColor: "#000000",
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+  },
+  overallVerdictAccentBar: {
+    width: 4,
+    backgroundColor: "#045DA9",
+  },
+  overallVerdictContent: {
+    padding: 16,
+    flex: 1,
+  },
+  overallVerdictTitle: {
+    fontSize: 10,
+    fontWeight: "900",
+    color: "#045DA9",
+    letterSpacing: 1,
+    marginBottom: 4,
+  },
+  overallVerdictText: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#334155",
+    lineHeight: 20,
+  },
+  correctionsCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    shadowColor: "#000000",
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+  },
+  correctionsTitle: {
+    fontSize: 11,
+    fontWeight: "900",
+    color: "#045DA9",
+    letterSpacing: 1,
+    marginBottom: 10,
+  },
+  segmentedControlTrack: {
+    flexDirection: "row",
+    backgroundColor: "#EBF2F7",
+    borderRadius: 10,
+    padding: 3,
+    marginBottom: 12,
+  },
+  segmentedSegment: {
+    flex: 1,
+    paddingVertical: 7,
+    alignItems: "center",
+    borderRadius: 8,
+  },
+  segmentedSegmentActive: {
+    backgroundColor: "#045DA9",
+  },
+  segmentedText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#465064",
+  },
+  segmentedTextActive: {
+    color: "#FFFFFF",
+  },
+  essayBoxContainer: {
+    backgroundColor: "#F5F7FA",
+    borderRadius: 12,
+    padding: 14,
+  },
+  essayBodyContainer: {
+    fontSize: 14,
+    lineHeight: 22,
+    color: "#1E293B",
+  },
+  essayNormalText: {
+    fontSize: 14,
+    lineHeight: 22,
+    color: "#1E293B",
+  },
+  essayErrorOriginal: {
+    fontSize: 14,
+    lineHeight: 22,
+    color: "#DC2626",
+    backgroundColor: "#FEE2E2",
+    textDecorationLine: "underline",
+    fontWeight: "600",
+  },
+  essayErrorCorrected: {
+    fontSize: 14,
+    lineHeight: 22,
+    color: "#16A34A",
+    backgroundColor: "#DCFCE7",
+    fontWeight: "800",
+  },
+  essayErrorOriginalStrikethrough: {
+    fontSize: 14,
+    lineHeight: 22,
+    color: "#DC2626",
+    backgroundColor: "#FEE2E2",
+    textDecorationLine: "line-through",
+    fontWeight: "600",
   },
   overallBanner: {
     borderRadius: 16,
