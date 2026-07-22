@@ -772,18 +772,7 @@ export default function IeltsWritingScreen() {
               </View>
             </View>
 
-            {/* Overall Verdict Accent Card */}
-            {Boolean(feedback.overallVerdict) && (
-              <View style={styles.overallVerdictCard}>
-                <View style={styles.overallVerdictAccentBar} />
-                <View style={styles.overallVerdictContent}>
-                  <Text style={styles.overallVerdictTitle}>
-                    {isKazakh ? "ЖАЛПЫ ҚОРЫТЫНДЫ" : "ОБЩИЙ ВЕРДИКТ"}
-                  </Text>
-                  <Text style={styles.overallVerdictText}>{feedback.overallVerdict}</Text>
-                </View>
-              </View>
-            )}
+
 
             {/* 4 Criteria Breakdown Grid */}
             <Text style={styles.criteriaSectionTitle}>
