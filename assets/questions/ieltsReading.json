@@ -1,0 +1,28 @@
+[
+  {
+    "id": "ielts_r1",
+    "text": "If the text does not state whether a statement is true or false, what should you select in IELTS Reading?",
+    "options": [
+      "Not Given",
+      "True",
+      "False",
+      "None of the above"
+    ],
+    "correctAnswerIndex": 0,
+    "subject": "ieltsReading",
+    "topic": "Passage 1: True/False/Not Given"
+  },
+  {
+    "id": "ielts_r2",
+    "text": "What is the best strategy for IELTS Reading 'Matching Headings' questions?",
+    "options": [
+      "Read headings first, then skim paragraph main ideas",
+      "Translate the whole passage word-for-word",
+      "Only read the first word of each sentence",
+      "Skip this section"
+    ],
+    "correctAnswerIndex": 0,
+    "subject": "ieltsReading",
+    "topic": "Passage 2: Matching Headings"
+  }
+]

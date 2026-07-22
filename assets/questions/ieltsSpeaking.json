@@ -1,0 +1,28 @@
+[
+  {
+    "id": "ielts_s1",
+    "text": "What type of topics are discussed in IELTS Speaking Part 1?",
+    "options": [
+      "Familiar personal topics (home, studies, hobbies)",
+      "In-depth scientific research papers",
+      "Abstract political philosophies",
+      "Complex financial strategies"
+    ],
+    "correctAnswerIndex": 0,
+    "subject": "ieltsSpeaking",
+    "topic": "Part 1: Introduction & Interview"
+  },
+  {
+    "id": "ielts_s2",
+    "text": "How much preparation time are you given in IELTS Speaking Part 2 (Cue Card)?",
+    "options": [
+      "1 minute",
+      "2 minutes",
+      "30 seconds",
+      "5 minutes"
+    ],
+    "correctAnswerIndex": 0,
+    "subject": "ieltsSpeaking",
+    "topic": "Part 2: Long Turn (Cue Card)"
+  }
+]

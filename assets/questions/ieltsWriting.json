@@ -1,0 +1,41 @@
+[
+  {
+    "id": "ielts_w1",
+    "text": "Which task is required in IELTS Writing Task 1 Academic?",
+    "options": [
+      "Describing trends in a graph or chart",
+      "Giving personal opinion on a social debate",
+      "Writing an informal email to a peer",
+      "Writing a poem"
+    ],
+    "correctAnswerIndex": 0,
+    "subject": "ieltsWriting",
+    "topic": "Task 1: Academic Report"
+  },
+  {
+    "id": "ielts_w2",
+    "text": "What is the minimum word count required for IELTS Writing Task 2?",
+    "options": [
+      "250 words",
+      "150 words",
+      "200 words",
+      "300 words"
+    ],
+    "correctAnswerIndex": 0,
+    "subject": "ieltsWriting",
+    "topic": "Task 2: Essay Writing"
+  },
+  {
+    "id": "ielts_w3",
+    "text": "What type of tone should be used in IELTS General Writing Task 1 when writing to a manager?",
+    "options": [
+      "Formal or Semi-formal",
+      "Extremely informal and casual",
+      "Poetic and emotional",
+      "Sarcastic and humorous"
+    ],
+    "correctAnswerIndex": 0,
+    "subject": "ieltsWriting",
+    "topic": "Task 3: General Letter"
+  }
+]
