@@ -851,18 +851,7 @@ export default function IeltsWritingScreen() {
               </View>
             </View>
 
-            {/* Concise Comments List */}
-            <View style={styles.commentsCard}>
-              <Text style={styles.commentsCardTitle}>
-                {isKazakh ? "Сарапшы пікірі & Кеңестер" : "Замечания и рекомендации"}
-              </Text>
-              {feedback.comments.map((comment, index) => (
-                <View key={index} style={styles.commentItem}>
-                  <Ionicons name="checkmark-circle" size={18} color="#10B981" style={{ marginRight: 8 }} />
-                  <Text style={styles.commentText}>{comment}</Text>
-                </View>
-              ))}
-            </View>
+
 
             {/* Retry Button */}
             <Pressable onPress={() => setFeedback(null)} style={styles.retryButton}>
