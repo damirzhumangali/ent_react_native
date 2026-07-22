@@ -51,91 +51,113 @@ In my view, the transition toward cycling is an immensely positive trend for two
 In conclusion, while infrastructure limitations keep driving dominant in some regions, the trend toward cycling is propelled by eco-consciousness and convenience. Encouraging bicycle transportation yields profound health and environmental benefits, making it an unequivocally positive evolution for modern cities.`;
 
 const defaultPrompts: { [key: string]: { task1: string; task2: string } } = {
-  "IELTS Academic": {
+  "UAE Government Spending": {
     task1: "The pie chart gives information on UAE government spending in 2000. The total budget was AED 315 billion.\n\nSummarize the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
     task2: "In some countries, bicycles are increasingly replacing cars, while in others, people prefer driving over cycling. What are the reasons behind this trend? Do you think this is a positive or negative development? Write at least 250 words.",
   },
-  "IELTS General": {
+  "General Letter": {
     task1: "You should spend about 20 minutes on this task.\n\nWrite a letter to a local English school principal explaining why you want to enroll in their advanced writing course, describe your writing background, and ask about enrollment options. Write at least 150 words.",
     task2: "In many countries, the cost of using public transport is rising rapidly.\n\nWhat are the causes of this problem? What solutions can be implemented to address it? Write at least 250 words.",
   },
-  "IELTS Mock Exam": {
+  "Changes in Dalton": {
     task1: "The two maps illustrate the changes in the town of Dalton between the years 1815 and 2015.\n\nSummarise the information by selecting and reporting the main features, and make comparison where relevant. Write at least 150 words.",
     task2: "Leaders of all kinds are often younger now than in the past. What are the reasons for this? Is it a positive or a negative development? Write at least 250 words.",
   },
-  "IELTS Practice Test": {
+  "Archaeological Site": {
     task1: "The plans below show findings at an archaeological site in 1890 and 1990.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.",
     task2: "These days, many young people do not spend their weekends and holidays doing outdoor activities such as hiking or mountaineering. Why is this the case? How can they be encouraged to spend more time in the natural environment?",
   },
-  "IELTS Actual Test": {
+  "USA to Canada Visitors": {
     task1: "The charts below show the percentage of visitors from the USA to Canada in different age groups in 2000 and 2020.\n\nSummarize the information by selecting and reporting the main features, and make comparisons where relevant.",
     task2: "In some cities, public parks and open spaces are changed into gardens where local residents can grow their own fruits and vegetables. Do you think the advantages of this development outweigh the disadvantages?",
   },
-  "IELTS Practice Test 2": {
+  "Turkey Spending": {
     task1: "The line graph below shows the percentage of spending in Turkey, from 1960 to 2000.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.",
     task2: "Some people think that the best way to improve road safety is to get drivers tested each year. To what extent do you agree or disagree?",
   },
-  "IELTS Practice Test 3": {
+  "US Employment": {
     task1: "The graph below presents the employment patterns in the USA between 1930 and 2010.\n\nSummarise the information by selecting and report in the main features, and make comparisons where relevant.",
     task2: "Some educationalists say that every child should be taught how to play a musical instrument. To what extent do you agree or disagree?",
   },
-  "IELTS Practice Test 4": {
+  "Deforestation Consequences": {
     task1: "The flow chart illustrates the consequence of deforestation. Summarise the information by selecting and reporting the main features.",
     task2: "In many workplaces, online communication is getting more common than meeting face to face. Do the advantages of this development outweigh the disadvantages?",
   },
-  "IELTS Practice Test 5": {
+  "Derby and Nottingham Houses": {
     task1: "The bar chart below shows the number of houses built per year in two cities, Derby and Nottingham, Between 2000 and 2009. Write a report for a university lecturer describing the information shown below.",
     task2: "People think that the best way to reduce crime is to give longer prison sentences. Others believe that there are other alternative solutions for reducing crime. Discuss both views and give your opinion on this topic.",
   },
-  "IELTS Practice Test 6": {
+  "Olive Oil Manufacturing": {
     task1: "The diagram below shows how Olive Oil is manufactured.\n\nWrite a report for a university lecturer describing the information below.",
     task2: "Nowadays people waste a lot of food that was bought from shops and restaurants. Why do you think people waste food? What can be done to reduce the amount of food they throw away?",
   },
-  "IELTS Practice Test 7": {
+  "Telephone Calls in Australia": {
     task1: "The bar chart below shows the total number of minutes (in billions) of telephone calls in Australia, divided into three categories, from 2001- 2008. Summarise the information by selecting and reporting the main features and make comparisons where relevant.",
     task2: "Some people think the money spent in developing the technology for space exploration is not justified. There are more beneficial ways to spend this money. To what extend do you agree or disagree?",
   },
-  "IELTS Practice Test 8": {
+  "UK Housing": {
     task1: "The pie charts below show the percentage of housing owned and rented in the UK in 1991 and 2007. Summarize the information by describing the main features of the charts and making comparisons where appropriate.",
     task2: "In some countries people spend long hours at work. Why does this happen? Is it positive or negative development",
   },
-  "IELTS Practice Test 9": {
+  "Automatic Photo Booth": {
     task1: "The flow chart below shows an automatic photo booth. Summarise the information by selecting and reporting the main features and make comparisons where relevant.",
     task2: "The typical teaching situation of a teacher and students in the class will not exist by the year 2050. To what extent do you agree or disagree?",
   },
-  "IELTS Practice Test 10": {
+  "Park Changes": {
     task1: "The pictures show the changes of a park from 1980 to the present day. Summarize the information by selecting and reporting the main features and make comparisons where relevant.",
     task2: "People often think about creating an ideal society, but most of the times fail in making this happen. What is your opinion about an ideal society? How can we create an ideal society?",
   },
-  "IELTS Practice Test 11": {
+  "China Oil": {
     task1: "The line graph below shows the oil production and consumption in China between 1982 and 2006. Summarize the information by selecting and reporting the main features and make comparisons where relevant.",
     task2: "Individuals can do nothing to improve the environment; only governments and large companies can make a difference. To what extent do you agree or disagree?",
   },
-  "IELTS Practice Test 12": {
+  "Organic Waste Compost": {
     task1: "The diagram below shows how to recycle organic waste to produce garden fertilizer (compost). Summaries the information by selecting and reporting the main features, and make comparisons where relevant.",
     task2: "Some people think news has no connection to people's lives, so it is a waste of time to read the news in newspapers and watch television news programs. To what extent do you agree or disagree?",
   },
-  "IELTS Practice Test 13": {
+  "Bookstore Layout": {
     task1: "The maps below show a bookstore in 2000 and now. Summaries the information by selecting and reporting the main features, and make comparisons where relevant.",
     task2: "Some people think that job satisfaction is more important than job security, while some people think that they cannot always expect job satisfaction, a permanent job is more important. Discuss both views and give your own opinion.",
   },
-  "IELTS Practice Test 14": {
+  "Australian Demographics": {
     task1: "The Pie chart gives information about the country of birth of people living in Australia and the table shows where people born in these countries live. Summarise the information by selecting and reporting the main features and make comparisons where relevant.",
     task2: "People are having more and more sugar-based drinks. What are the reasons? What are the solutions to make people drink less.",
   },
-  "IELTS Practice Test 15": {
+  "World Population Projections": {
     task1: "The bar chart shows the percentage of the total world population in 4 countries in 1950 and 2002, and projections for 2050. Summarise the information by selecting and reporting the main features and make comparisons where relevant.",
     task2: "The use of social media is replacing face-to-face interaction among many people in society. Do you think the advantages outweigh the disadvantages?",
   },
-  "IELTS Practice Test 16": {
+  "Gender School Enrollment": {
     task1: "The chart below shows the number of girls per 100 boys enrolled in different levels of school education. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",
     task2: "Some people believe that capital punishment should not be used. Others, however, argue that it should be allowed for the most serious crimes. Discuss both views and give your opinion.",
   },
-  "IELTS Practice Test 17": {
+  "Corn Ethanol Production": {
     task1: "The diagram below shows how ethanol fuel is produced from corn. Summarise the information by selecting and reporting the main features and make comparisons where relevant.",
     task2: "Some people think that physical strength is important for success in sport, while other people think that mental strength is more important. Discuss both views and give your own opinion.",
   },
 };
+
+defaultPrompts["IELTS Academic"] = defaultPrompts["UAE Government Spending"];
+defaultPrompts["IELTS General"] = defaultPrompts["General Letter"];
+defaultPrompts["IELTS Mock Exam"] = defaultPrompts["Changes in Dalton"];
+defaultPrompts["IELTS Practice Test"] = defaultPrompts["Archaeological Site"];
+defaultPrompts["IELTS Actual Test"] = defaultPrompts["USA to Canada Visitors"];
+defaultPrompts["IELTS Practice Test 2"] = defaultPrompts["Turkey Spending"];
+defaultPrompts["IELTS Practice Test 3"] = defaultPrompts["US Employment"];
+defaultPrompts["IELTS Practice Test 4"] = defaultPrompts["Deforestation Consequences"];
+defaultPrompts["IELTS Practice Test 5"] = defaultPrompts["Derby and Nottingham Houses"];
+defaultPrompts["IELTS Practice Test 6"] = defaultPrompts["Olive Oil Manufacturing"];
+defaultPrompts["IELTS Practice Test 7"] = defaultPrompts["Telephone Calls in Australia"];
+defaultPrompts["IELTS Practice Test 8"] = defaultPrompts["UK Housing"];
+defaultPrompts["IELTS Practice Test 9"] = defaultPrompts["Automatic Photo Booth"];
+defaultPrompts["IELTS Practice Test 10"] = defaultPrompts["Park Changes"];
+defaultPrompts["IELTS Practice Test 11"] = defaultPrompts["China Oil"];
+defaultPrompts["IELTS Practice Test 12"] = defaultPrompts["Organic Waste Compost"];
+defaultPrompts["IELTS Practice Test 13"] = defaultPrompts["Bookstore Layout"];
+defaultPrompts["IELTS Practice Test 14"] = defaultPrompts["Australian Demographics"];
+defaultPrompts["IELTS Practice Test 15"] = defaultPrompts["World Population Projections"];
+defaultPrompts["IELTS Practice Test 16"] = defaultPrompts["Gender School Enrollment"];
+defaultPrompts["IELTS Practice Test 17"] = defaultPrompts["Corn Ethanol Production"];
 
 const getPromptImage = (promptText: string) => {
   if (promptText.includes("UAE government spending")) {
