@@ -262,7 +262,7 @@ export default function IeltsWritingScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={["#FFFFFF", "#F8FAFC"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={["#FFFFFF", "#FFFFFF"]} style={StyleSheet.absoluteFill} />
 
       {/* Header Bar */}
       <View style={styles.header}>
@@ -516,7 +516,7 @@ export default function IeltsWritingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FFFFFF",
   },
   header: {
     flexDirection: "row",
