@@ -427,28 +427,24 @@ export default function IeltsWritingScreen() {
     );
   };
 
-  const getCategoryColor = (cat?: string) => {
-    const c = (cat || "").toLowerCase();
-    if (c.includes("gramm")) return "#4F46E5";
-    if (c.includes("vocab") || c.includes("lexic")) return "#EA580C";
-    if (c.includes("spell")) return "#EF4444";
-    if (c.includes("task")) return "#8B5CF6";
-    return "#045DA9";
+  const getCategoryColor = (category?: string) => {
+    if (!category) return "#6366F1";
+    const lower = category.toLowerCase();
+    if (lower.includes("vocab") || lower.includes("lexic")) return "#F97316";
+    if (lower.includes("spell")) return "#EF4444";
+    return "#6366F1";
   };
 
   const renderErrorCard = (err: EssayError, index: number, total: number) => {
     const catColor = getCategoryColor(err.category);
-    const catName = (err.category || "Grammar").toUpperCase();
+    const catName = (err.category || "GRAMMAR").toUpperCase();
 
     return (
-      <View key={`error-card-${index}`} style={styles.errorCard}>
-        {total > 1 && (
-          <Text style={styles.errorEyebrow}>
-            {isKazakh ? `ОШИБКА ${index} ИЗ ${total}` : `ОШИБКА ${index} ИЗ ${total}`}
-          </Text>
-        )}
+      <View key={index} style={styles.errorBreakdownCard}>
+        <Text style={styles.errorEyebrow}>
+          {`ОШИБКА ${index + 1} ИЗ ${total}`}
+        </Text>
 
-        {/* Category badge */}
         <View style={styles.errorCategoryRow}>
           <View style={[styles.errorCategoryDot, { backgroundColor: catColor }]} />
           <Text style={[styles.errorCategoryText, { color: catColor }]}>
@@ -456,34 +452,26 @@ export default function IeltsWritingScreen() {
           </Text>
         </View>
 
-        {/* Diff Box */}
-        <View style={styles.diffBox}>
-          {/* Red Original Row */}
-          <View style={styles.diffRowRed}>
-            <Text style={styles.diffSignRed}>−</Text>
+        <View style={styles.diffBoxContainer}>
+          <View style={styles.diffLineRed}>
+            <Text style={styles.diffPrefixRed}>−</Text>
             <View style={styles.diffDividerRed} />
-            <Text style={styles.diffTextRedStrikethrough}>{err.originalText}</Text>
+            <Text style={styles.diffTextRed}>{err.originalText}</Text>
           </View>
 
-          <View style={styles.diffLineSeparator} />
-
-          {/* Green Fix Row */}
-          <View style={styles.diffRowGreen}>
-            <Text style={styles.diffSignGreen}>+</Text>
+          <View style={styles.diffLineGreen}>
+            <Text style={styles.diffPrefixGreen}>+</Text>
             <View style={styles.diffDividerGreen} />
-            <Text style={styles.diffTextGreenBold}>{err.correction}</Text>
+            <Text style={styles.diffTextGreen}>{err.correction}</Text>
           </View>
         </View>
 
-        {/* Explanation section with L-line */}
-        <View style={styles.explanationContainer}>
-          <View style={styles.explanationHeaderRow}>
-            <Text style={styles.explanationLConnector}>└</Text>
-            <Text style={styles.explanationTitle}>
-              {isKazakh ? "ОБЪЯСНЕНИЕ" : "ОБЪЯСНЕНИЕ"}
-            </Text>
+        <View style={styles.explanationRow}>
+          <Text style={styles.lConnectorText}>└</Text>
+          <View style={styles.explanationContent}>
+            <Text style={styles.explanationLabel}>ОБЪЯСНЕНИЕ</Text>
+            <Text style={styles.explanationText}>{err.explanation}</Text>
           </View>
-          <Text style={styles.explanationText}>{err.explanation}</Text>
         </View>
       </View>
     );
@@ -893,6 +881,20 @@ export default function IeltsWritingScreen() {
               {renderCriterionCircleCard("Grammar Accuracy", feedback.grammar)}
             </View>
 
+            {/* РАЗБОР ОШИБОК Section */}
+            {Boolean(feedback.errors && feedback.errors.length > 0) && (
+              <View style={{ marginTop: 8 }}>
+                <Text style={styles.criteriaSectionTitle}>
+                  {isKazakh ? "РАЗБОР ОШИБОК" : "РАЗБОР ОШИБОК"}
+                </Text>
+                <View style={{ marginTop: 10 }}>
+                  {feedback.errors!.map((err, index) =>
+                    renderErrorCard(err, index, feedback.errors!.length)
+                  )}
+                </View>
+              </View>
+            )}
+
             {/* ВАШЕ ЭССЕ С ИСПРАВЛЕНИЯМИ Card */}
             <View style={styles.correctionsCard}>
               <Text style={styles.correctionsTitle}>
@@ -935,17 +937,7 @@ export default function IeltsWritingScreen() {
               </View>
             </View>
 
-            {/* РАЗБОР ОШИБОК Section */}
-            {Boolean(feedback.errors && feedback.errors.length > 0) && (
-              <View style={styles.errorsSection}>
-                <Text style={styles.errorsSectionTitle}>
-                  {isKazakh ? "ҚАТЕЛЕРДІ ТАЛДАУ" : "РАЗБОР ОШИБОК"}
-                </Text>
-                {feedback.errors!.map((err, idx) =>
-                  renderErrorCard(err, idx + 1, feedback.errors!.length)
-                )}
-              </View>
-            )}
+
 
             {/* Retry Button */}
             <Pressable onPress={() => setFeedback(null)} style={styles.retryButton}>
@@ -1309,24 +1301,151 @@ const styles = StyleSheet.create({
   essayErrorOriginal: {
     fontSize: 14,
     lineHeight: 22,
-    color: "#E53E3E",
-    backgroundColor: "#FFD1D1",
+    color: "#DC2626",
+    backgroundColor: "#FEE2E2",
+    textDecorationLine: "underline",
     fontWeight: "600",
   },
   essayErrorCorrected: {
     fontSize: 14,
     lineHeight: 22,
-    color: "#22543D",
-    backgroundColor: "#C6F6D5",
-    fontWeight: "700",
+    color: "#16A34A",
+    backgroundColor: "#DCFCE7",
+    fontWeight: "800",
   },
   essayErrorOriginalStrikethrough: {
     fontSize: 14,
     lineHeight: 22,
-    color: "#E53E3E",
-    backgroundColor: "#FFD1D1",
+    color: "#DC2626",
+    backgroundColor: "#FEE2E2",
     textDecorationLine: "line-through",
     fontWeight: "600",
+  },
+  errorBreakdownCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    shadowColor: "#000000",
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  errorEyebrow: {
+    fontSize: 11,
+    fontWeight: "800",
+    color: "#94A3B8",
+    letterSpacing: 1,
+    marginBottom: 6,
+  },
+  errorCategoryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  errorCategoryDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginRight: 6,
+  },
+  errorCategoryText: {
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 0.5,
+  },
+  diffBoxContainer: {
+    borderRadius: 8,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    marginBottom: 12,
+  },
+  diffLineRed: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FEE2E2",
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+  },
+  diffPrefixRed: {
+    color: "#991B1B",
+    fontSize: 14,
+    fontWeight: "700",
+    marginRight: 8,
+    width: 12,
+    textAlign: "center",
+  },
+  diffDividerRed: {
+    width: 1,
+    height: 16,
+    backgroundColor: "#FCA5A5",
+    marginRight: 8,
+  },
+  diffTextRed: {
+    color: "#991B1B",
+    fontSize: 13,
+    textDecorationLine: "line-through",
+    flex: 1,
+    fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace",
+  },
+  diffLineGreen: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#DCFCE7",
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderTopWidth: 1,
+    borderTopColor: "#E2E8F0",
+  },
+  diffPrefixGreen: {
+    color: "#166534",
+    fontSize: 14,
+    fontWeight: "800",
+    marginRight: 8,
+    width: 12,
+    textAlign: "center",
+  },
+  diffDividerGreen: {
+    width: 1,
+    height: 16,
+    backgroundColor: "#86EFAC",
+    marginRight: 8,
+  },
+  diffTextGreen: {
+    color: "#166534",
+    fontSize: 13,
+    fontWeight: "800",
+    flex: 1,
+    fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace",
+  },
+  explanationRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginTop: 2,
+  },
+  lConnectorText: {
+    fontSize: 22,
+    color: "#CBD5E1",
+    marginRight: 6,
+    marginTop: -4,
+  },
+  explanationContent: {
+    flex: 1,
+  },
+  explanationLabel: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: "#94A3B8",
+    letterSpacing: 1,
+    marginBottom: 2,
+  },
+  explanationText: {
+    fontSize: 13,
+    color: "#475569",
+    lineHeight: 18,
   },
   overallBanner: {
     borderRadius: 16,
@@ -1446,141 +1565,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     color: "#334155",
-  },
-  errorsSection: {
-    gap: 12,
-    marginTop: 4,
-  },
-  errorsSectionTitle: {
-    fontSize: 14,
-    fontWeight: "900",
-    color: "#0F172A",
-    letterSpacing: 0.8,
-    marginBottom: 4,
-  },
-  errorCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 20,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
-    gap: 10,
-    shadowColor: "#000000",
-    shadowOpacity: 0.03,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-  },
-  errorEyebrow: {
-    fontSize: 10,
-    fontWeight: "800",
-    color: "#94A3B8",
-    letterSpacing: 1,
-  },
-  errorCategoryRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  errorCategoryDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-  },
-  errorCategoryText: {
-    fontSize: 11,
-    fontWeight: "800",
-    letterSpacing: 0.5,
-  },
-  diffBox: {
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
-    overflow: "hidden",
-  },
-  diffRowRed: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#FEE2E2",
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-  },
-  diffSignRed: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#991B1B",
-    width: 16,
-    textAlign: "center",
-  },
-  diffDividerRed: {
-    width: 1,
-    height: 16,
-    backgroundColor: "#FCA5A5",
-    marginHorizontal: 8,
-  },
-  diffTextRedStrikethrough: {
-    flex: 1,
-    fontSize: 13,
-    fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace",
-    color: "#991B1B",
-    textDecorationLine: "line-through",
-  },
-  diffLineSeparator: {
-    height: 1,
-    backgroundColor: "#E2E8F0",
-  },
-  diffRowGreen: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#DCFCE7",
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-  },
-  diffSignGreen: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#166534",
-    width: 16,
-    textAlign: "center",
-  },
-  diffDividerGreen: {
-    width: 1,
-    height: 16,
-    backgroundColor: "#86EFAC",
-    marginHorizontal: 8,
-  },
-  diffTextGreenBold: {
-    flex: 1,
-    fontSize: 13,
-    fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace",
-    fontWeight: "700",
-    color: "#166534",
-  },
-  explanationContainer: {
-    marginTop: 2,
-    paddingLeft: 4,
-  },
-  explanationHeaderRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: 4,
-  },
-  explanationLConnector: {
-    fontSize: 14,
-    color: "#94A3B8",
-    fontWeight: "700",
-  },
-  explanationTitle: {
-    fontSize: 10,
-    fontWeight: "800",
-    color: "#64748B",
-    letterSpacing: 0.8,
-  },
-  explanationText: {
-    fontSize: 13,
-    color: "#475569",
-    lineHeight: 18,
-    paddingLeft: 14,
   },
   retryButton: {
     flexDirection: "row",
