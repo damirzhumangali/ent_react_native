@@ -9,6 +9,7 @@ import {
   Dimensions,
   ActivityIndicator,
   Image,
+  Platform,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -422,6 +423,68 @@ export default function IeltsWritingScreen() {
         </View>
         <Text style={styles.criterionNameText}>{name}</Text>
         <Text style={[styles.criterionScoreSub, { color }]}>{score.toFixed(1)} / 9.0</Text>
+      </View>
+    );
+  };
+
+  const getCategoryColor = (cat?: string) => {
+    const c = (cat || "").toLowerCase();
+    if (c.includes("gramm")) return "#4F46E5";
+    if (c.includes("vocab") || c.includes("lexic")) return "#EA580C";
+    if (c.includes("spell")) return "#EF4444";
+    if (c.includes("task")) return "#8B5CF6";
+    return "#045DA9";
+  };
+
+  const renderErrorCard = (err: EssayError, index: number, total: number) => {
+    const catColor = getCategoryColor(err.category);
+    const catName = (err.category || "Grammar").toUpperCase();
+
+    return (
+      <View key={`error-card-${index}`} style={styles.errorCard}>
+        {total > 1 && (
+          <Text style={styles.errorEyebrow}>
+            {isKazakh ? `ОШИБКА ${index} ИЗ ${total}` : `ОШИБКА ${index} ИЗ ${total}`}
+          </Text>
+        )}
+
+        {/* Category badge */}
+        <View style={styles.errorCategoryRow}>
+          <View style={[styles.errorCategoryDot, { backgroundColor: catColor }]} />
+          <Text style={[styles.errorCategoryText, { color: catColor }]}>
+            {catName}
+          </Text>
+        </View>
+
+        {/* Diff Box */}
+        <View style={styles.diffBox}>
+          {/* Red Original Row */}
+          <View style={styles.diffRowRed}>
+            <Text style={styles.diffSignRed}>−</Text>
+            <View style={styles.diffDividerRed} />
+            <Text style={styles.diffTextRedStrikethrough}>{err.originalText}</Text>
+          </View>
+
+          <View style={styles.diffLineSeparator} />
+
+          {/* Green Fix Row */}
+          <View style={styles.diffRowGreen}>
+            <Text style={styles.diffSignGreen}>+</Text>
+            <View style={styles.diffDividerGreen} />
+            <Text style={styles.diffTextGreenBold}>{err.correction}</Text>
+          </View>
+        </View>
+
+        {/* Explanation section with L-line */}
+        <View style={styles.explanationContainer}>
+          <View style={styles.explanationHeaderRow}>
+            <Text style={styles.explanationLConnector}>└</Text>
+            <Text style={styles.explanationTitle}>
+              {isKazakh ? "ОБЪЯСНЕНИЕ" : "ОБЪЯСНЕНИЕ"}
+            </Text>
+          </View>
+          <Text style={styles.explanationText}>{err.explanation}</Text>
+        </View>
       </View>
     );
   };
@@ -872,7 +935,17 @@ export default function IeltsWritingScreen() {
               </View>
             </View>
 
-
+            {/* РАЗБОР ОШИБОК Section */}
+            {Boolean(feedback.errors && feedback.errors.length > 0) && (
+              <View style={styles.errorsSection}>
+                <Text style={styles.errorsSectionTitle}>
+                  {isKazakh ? "ҚАТЕЛЕРДІ ТАЛДАУ" : "РАЗБОР ОШИБОК"}
+                </Text>
+                {feedback.errors!.map((err, idx) =>
+                  renderErrorCard(err, idx + 1, feedback.errors!.length)
+                )}
+              </View>
+            )}
 
             {/* Retry Button */}
             <Pressable onPress={() => setFeedback(null)} style={styles.retryButton}>
@@ -1374,6 +1447,141 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     color: "#334155",
+  },
+  errorsSection: {
+    gap: 12,
+    marginTop: 4,
+  },
+  errorsSectionTitle: {
+    fontSize: 14,
+    fontWeight: "900",
+    color: "#0F172A",
+    letterSpacing: 0.8,
+    marginBottom: 4,
+  },
+  errorCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    gap: 10,
+    shadowColor: "#000000",
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  errorEyebrow: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: "#94A3B8",
+    letterSpacing: 1,
+  },
+  errorCategoryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  errorCategoryDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  errorCategoryText: {
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 0.5,
+  },
+  diffBox: {
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    overflow: "hidden",
+  },
+  diffRowRed: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FEE2E2",
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+  },
+  diffSignRed: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#991B1B",
+    width: 16,
+    textAlign: "center",
+  },
+  diffDividerRed: {
+    width: 1,
+    height: 16,
+    backgroundColor: "#FCA5A5",
+    marginHorizontal: 8,
+  },
+  diffTextRedStrikethrough: {
+    flex: 1,
+    fontSize: 13,
+    fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace",
+    color: "#991B1B",
+    textDecorationLine: "line-through",
+  },
+  diffLineSeparator: {
+    height: 1,
+    backgroundColor: "#E2E8F0",
+  },
+  diffRowGreen: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#DCFCE7",
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+  },
+  diffSignGreen: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#166534",
+    width: 16,
+    textAlign: "center",
+  },
+  diffDividerGreen: {
+    width: 1,
+    height: 16,
+    backgroundColor: "#86EFAC",
+    marginHorizontal: 8,
+  },
+  diffTextGreenBold: {
+    flex: 1,
+    fontSize: 13,
+    fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace",
+    fontWeight: "700",
+    color: "#166534",
+  },
+  explanationContainer: {
+    marginTop: 2,
+    paddingLeft: 4,
+  },
+  explanationHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 4,
+  },
+  explanationLConnector: {
+    fontSize: 14,
+    color: "#94A3B8",
+    fontWeight: "700",
+  },
+  explanationTitle: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: "#64748B",
+    letterSpacing: 0.8,
+  },
+  explanationText: {
+    fontSize: 13,
+    color: "#475569",
+    lineHeight: 18,
+    paddingLeft: 14,
   },
   retryButton: {
     flexDirection: "row",
