@@ -8,6 +8,7 @@ import {
   TextInput,
   Dimensions,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -341,6 +342,16 @@ export default function IeltsWritingScreen() {
                 </Text>
               </View>
               <Text style={styles.promptText}>{currentPrompt}</Text>
+
+              {activeTask === "task1" && (
+                <View style={styles.promptImageContainer}>
+                  <Image
+                    source={require("@/assets/images/uae_spending.png")}
+                    style={styles.promptImage}
+                    resizeMode="contain"
+                  />
+                </View>
+              )}
             </View>
 
             {/* Essay Input Area Header */}
@@ -606,6 +617,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 21,
     color: "#334155",
+  },
+  promptImageContainer: {
+    marginTop: 12,
+    alignItems: "center",
+    backgroundColor: "#F8FAFC",
+    borderRadius: 10,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+  },
+  promptImage: {
+    width: "100%",
+    height: 180,
   },
   inputHeaderRow: {
     flexDirection: "row",
