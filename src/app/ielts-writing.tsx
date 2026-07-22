@@ -333,26 +333,19 @@ export default function IeltsWritingScreen() {
         {feedback === null ? (
           /* Essay Submission Section */
           <View style={styles.submissionSection}>
-            {/* Prompt Box */}
-            <View style={styles.promptCard}>
-              <View style={styles.promptHeader}>
-                <Ionicons name="document-text-outline" size={18} color="#045DA9" />
-                <Text style={styles.promptTitle}>
-                  {activeTask === "task1" ? "Task 1 Prompt" : "Task 2 Prompt"}
-                </Text>
+            {/* Image (Top of Task 1) */}
+            {activeTask === "task1" && (
+              <View style={styles.promptImageContainer}>
+                <Image
+                  source={require("@/assets/images/uae_spending.png")}
+                  style={styles.promptImage}
+                  resizeMode="contain"
+                />
               </View>
-              <Text style={styles.promptText}>{currentPrompt}</Text>
+            )}
 
-              {activeTask === "task1" && (
-                <View style={styles.promptImageContainer}>
-                  <Image
-                    source={require("@/assets/images/uae_spending.png")}
-                    style={styles.promptImage}
-                    resizeMode="contain"
-                  />
-                </View>
-              )}
-            </View>
+            {/* Prompt Text */}
+            <Text style={styles.promptText}>{currentPrompt}</Text>
 
             {/* Essay Input Area Header */}
             <View style={styles.inputHeaderRow}>
@@ -614,22 +607,23 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   promptText: {
-    fontSize: 14,
-    lineHeight: 21,
+    fontSize: 15,
+    lineHeight: 23,
     color: "#334155",
+    marginVertical: 12,
+    paddingHorizontal: 4,
   },
   promptImageContainer: {
-    marginTop: 12,
     alignItems: "center",
-    backgroundColor: "#F8FAFC",
-    borderRadius: 10,
-    padding: 8,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    paddingVertical: 12,
+    marginVertical: 8,
   },
   promptImage: {
     width: "100%",
-    height: 180,
+    height: 280,
   },
   inputHeaderRow: {
     flexDirection: "row",
