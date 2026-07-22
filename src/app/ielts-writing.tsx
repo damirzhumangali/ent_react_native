@@ -230,6 +230,31 @@ const getPromptImage = (promptText: string) => {
   return require("@/assets/images/uae_spending.png");
 };
 
+const getPromptImageName = (promptText: string): string | null => {
+  if (promptText.includes("UAE government spending")) return "uae_spending";
+  if (promptText.includes("Dalton") || promptText.includes("dalton")) return "changes_in_dalton";
+  if (promptText.includes("produce and recycle paper")) return "produce_recycle_paper";
+  if (promptText.includes("USA to Canada") || promptText.includes("visitors from the USA")) return "usa_canada_visitors";
+  if (promptText.includes("Turkey") || promptText.includes("spending in Turkey")) return "turkey_spending";
+  if (promptText.includes("employment patterns") || promptText.includes("USA between 1930")) return "us_employment";
+  if (promptText.includes("deforestation") || promptText.includes("Deforestation")) return "deforestation_consequences";
+  if (promptText.includes("Derby") || promptText.includes("Nottingham")) return "derby_nottingham_houses";
+  if (promptText.includes("Olive Oil") || promptText.includes("olive oil")) return "olive_oil_manufacturing";
+  if (promptText.includes("telephone calls in Australia")) return "australia_telephone_calls";
+  if (promptText.includes("housing owned and rented")) return "uk_housing_owned_rented";
+  if (promptText.includes("automatic photo booth")) return "automatic_photo_booth";
+  if (promptText.includes("changes of a park")) return "park_changes_1980";
+  if (promptText.includes("oil production and consumption in China")) return "china_oil_production_consumption";
+  if (promptText.includes("recycle organic waste")) return "organic_waste_compost";
+  if (promptText.includes("bookstore")) return "bookstore_layout";
+  if (promptText.includes("country of birth of people living in Australia")) return "australian_demographics";
+  if (promptText.includes("world population")) return "world_population_projections";
+  if (promptText.includes("girls per 100 boys")) return "gender_school_enrollment";
+  if (promptText.includes("archaeological")) return "archaeological_site";
+  if (promptText.includes("corn")) return "corn_ethanol_production";
+  return null;
+};
+
 export default function IeltsWritingScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -287,6 +312,7 @@ export default function IeltsWritingScreen() {
         body: JSON.stringify({
           essayText,
           taskPrompt: currentPrompt,
+          imageName: activeTask === "task1" ? getPromptImageName(currentPrompt) : null,
         }),
       });
 
@@ -498,8 +524,8 @@ export default function IeltsWritingScreen() {
         {feedback === null ? (
           /* Essay Submission Section */
           <View style={styles.submissionSection}>
-            {/* Image (Top of Prompt) */}
-            {getPromptImage(currentPrompt) && (
+            {/* Image (Top of Task 1 only) */}
+            {activeTask === "task1" && getPromptImage(currentPrompt) && (
               <View style={styles.promptImageContainer}>
                 <Image
                   source={getPromptImage(currentPrompt)}
