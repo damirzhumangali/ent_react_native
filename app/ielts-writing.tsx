@@ -382,6 +382,50 @@ export default function IeltsWritingScreen() {
     return <Text style={styles.essayBodyContainer}>{elements}</Text>;
   };
 
+  const renderCriterionCircleCard = (name: string, score: number) => {
+    const color = getScoreColor(score);
+    const size = 54;
+    const radius = 21;
+    const circumference = 2 * Math.PI * radius;
+    const progressOffset = circumference * (1 - Math.min(9.0, Math.max(0, score)) / 9.0);
+
+    return (
+      <View style={styles.criterionCircleCard}>
+        <View style={styles.criterionCircleContainer}>
+          <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+            <Circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              stroke="#E2E8F0"
+              strokeWidth="4"
+              fill="none"
+            />
+            <Circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              stroke={color}
+              strokeWidth="4"
+              fill="none"
+              strokeDasharray={`${circumference}`}
+              strokeDashoffset={`${progressOffset}`}
+              strokeLinecap="round"
+              transform={`rotate(-90 ${size / 2} ${size / 2})`}
+            />
+          </Svg>
+          <View style={styles.criterionCircleTextOverlay}>
+            <Text style={[styles.criterionCircleScoreText, { color }]}>
+              {score.toFixed(1)}
+            </Text>
+          </View>
+        </View>
+        <Text style={styles.criterionNameText}>{name}</Text>
+        <Text style={[styles.criterionScoreSub, { color }]}>{score.toFixed(1)} / 9.0</Text>
+      </View>
+    );
+  };
+
   const getCombinedScore = (t1: number, t2: number): number => {
     const raw = (t1 * (1 / 3)) + (t2 * (2 / 3));
     const integerPart = Math.floor(raw);
@@ -780,33 +824,10 @@ export default function IeltsWritingScreen() {
             </Text>
 
             <View style={styles.criteriaGrid}>
-              <View style={styles.criterionCard}>
-                <Text style={styles.criterionName}>Task Achievement</Text>
-                <Text style={[styles.criterionScore, { color: getScoreColor(feedback.taskAchievement) }]}>
-                  {feedback.taskAchievement} / 9.0
-                </Text>
-              </View>
-
-              <View style={styles.criterionCard}>
-                <Text style={styles.criterionName}>Coherence & Cohesion</Text>
-                <Text style={[styles.criterionScore, { color: getScoreColor(feedback.coherence) }]}>
-                  {feedback.coherence} / 9.0
-                </Text>
-              </View>
-
-              <View style={styles.criterionCard}>
-                <Text style={styles.criterionName}>Lexical Resource</Text>
-                <Text style={[styles.criterionScore, { color: getScoreColor(feedback.lexical) }]}>
-                  {feedback.lexical} / 9.0
-                </Text>
-              </View>
-
-              <View style={styles.criterionCard}>
-                <Text style={styles.criterionName}>Grammar Accuracy</Text>
-                <Text style={[styles.criterionScore, { color: getScoreColor(feedback.grammar) }]}>
-                  {feedback.grammar} / 9.0
-                </Text>
-              </View>
+              {renderCriterionCircleCard("Task Achievement", feedback.taskAchievement)}
+              {renderCriterionCircleCard("Coherence & Cohesion", feedback.coherence)}
+              {renderCriterionCircleCard("Lexical Resource", feedback.lexical)}
+              {renderCriterionCircleCard("Grammar Accuracy", feedback.grammar)}
             </View>
 
             {/* ВАШЕ ЭССЕ С ИСПРАВЛЕНИЯМИ Card */}
@@ -1270,22 +1291,46 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: 10,
   },
-  criterionCard: {
+  criterionCircleCard: {
     width: (SCREEN_WIDTH - 42) / 2,
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 14,
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    alignItems: "center",
     borderWidth: 1,
     borderColor: "#E2E8F0",
+    shadowColor: "#000000",
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
   },
-  criterionName: {
+  criterionCircleContainer: {
+    width: 54,
+    height: 54,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    marginBottom: 8,
+  },
+  criterionCircleTextOverlay: {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  criterionCircleScoreText: {
+    fontSize: 15,
+    fontWeight: "800",
+  },
+  criterionNameText: {
     fontSize: 12,
-    fontWeight: "600",
-    color: "#64748B",
-    marginBottom: 6,
+    fontWeight: "700",
+    color: "#475569",
+    textAlign: "center",
+    marginBottom: 4,
   },
-  criterionScore: {
-    fontSize: 20,
+  criterionScoreSub: {
+    fontSize: 14,
     fontWeight: "800",
   },
   commentsCard: {
