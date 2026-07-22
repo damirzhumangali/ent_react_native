@@ -237,7 +237,7 @@ export default function IeltsWritingScreen() {
   const appLanguage = useGameStore((state) => state.appLanguage);
   const isKazakh = appLanguage === "kk";
 
-  const [activeTask, setActiveTask] = useState<"task1" | "task2">("task2");
+  const [activeTask, setActiveTask] = useState<"task1" | "task2">("task1");
   const [essayText, setEssayText] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [feedback, setFeedback] = useState<EssayFeedback | null>(null);
@@ -497,8 +497,8 @@ export default function IeltsWritingScreen() {
         {feedback === null ? (
           /* Essay Submission Section */
           <View style={styles.submissionSection}>
-            {/* Image (Top of Task 1) */}
-            {activeTask === "task1" && getPromptImage(currentPrompt) && (
+            {/* Image (Top of Prompt) */}
+            {getPromptImage(currentPrompt) && (
               <View style={styles.promptImageContainer}>
                 <Image
                   source={getPromptImage(currentPrompt)}
